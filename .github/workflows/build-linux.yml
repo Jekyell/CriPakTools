@@ -13,9 +13,7 @@ jobs:
           sudo apt-get install -y mono-complete \
             libmono-i18n4.0-cil \
             libmono-i18n-cjk4.0-cil \
-            libmono-i18n-west4.0-cil \
-            libmono-system-text-encoding4.0-cil \
-            libmono-system-text-encoding-codepages4.0-cil
+            libmono-i18n-west4.0-cil
       - name: Restore & build
         run: |
           nuget restore CriPakTools.sln
