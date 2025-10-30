@@ -1,0 +1,29 @@
+name: build-linux
+on:
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install mono
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mono-complete nuget msbuild
+      - name: Restore & build
+        run: |
+          nuget restore CriPakTools.sln
+          msbuild /p:Configuration=Release CriPakTools.sln
+      - name: Package
+        run: |
+          mkdir -p out
+          cp CriPakTools/bin/Release/CriPakTools.exe out/
+          echo '#!/usr/bin/env bash' > out/cripaktools
+          echo 'mono "$(dirname "$0")/CriPakTools.exe" "$@"' >> out/cripaktools
+          chmod +x out/cripaktools
+          tar -C out -czf CriPakTools-linux.tar.gz .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CriPakTools-linux
+          path: CriPakTools-linux.tar.gz
